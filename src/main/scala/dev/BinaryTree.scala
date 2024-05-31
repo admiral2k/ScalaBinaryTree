@@ -22,6 +22,8 @@ abstract class BinaryTree[+T] {
   def nodesAtLevel(level: Int): List[BinaryTree[T]]
 
   def collectNodes: List[T]
+
+  def hasPath(tree: BinaryTree[Int], target: Int): Boolean
 }
 
 case class Node[+T](
@@ -55,7 +57,17 @@ case class Node[+T](
   override def collectNodes: List[T] = {
     this.value :: this.leftChild.collectNodes ::: this.rightChild.collectNodes
   }
+
+
+    //TODO: edit to the following signature
+    //TODO: def hasPath(tree: BinaryTree[Int], target: Int): Boolean
+  def hasPath(tree: BinaryTree[Int], target: Int): Boolean = {
+    if (tree.isEmpty) false
+    else if (tree.isLeaf) tree.value == target
+    else hasPath(tree.leftChild, target - tree.value) || hasPath(tree.rightChild, target - tree.value)
+  }
 }
+
 
 
 case object TreeEnd extends BinaryTree[Nothing] {
@@ -76,4 +88,7 @@ case object TreeEnd extends BinaryTree[Nothing] {
   override def nodesAtLevel(level: Int): List[BinaryTree[Nothing]] = Nil
 
   override def collectNodes(): List[Nothing] = List()
+
+
+  def hasPath(tree: BinaryTree[Int], target: Int): Boolean = false
 }
