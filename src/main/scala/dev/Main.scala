@@ -18,4 +18,6 @@ object Main extends App {
       Node(7,
         TreeEnd,
         TreeEnd)))
+
+  println(tree.collectLeaves)
 }
