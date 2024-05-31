@@ -19,5 +19,5 @@ object Main extends App {
         TreeEnd,
         TreeEnd)))
 
-  println(tree.collectLeaves)
+  println(tree.nodesAtLevel(6))
 }

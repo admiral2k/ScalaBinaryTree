@@ -18,6 +18,8 @@ abstract class BinaryTree[+T] {
   def collectLeaves: List[BinaryTree[T]]
 
   def countLeaves: Int
+
+  def nodesAtLevel(level: Int): List[BinaryTree[T]]
 }
 
 case class Node[+T](
@@ -54,6 +56,17 @@ case class Node[+T](
   }
 
   override def countLeaves: Int = collectLeaves.size
+
+  override def nodesAtLevel(level: Int): List[BinaryTree[T]] = {
+    @tailrec
+    def loop(nodesAtCurrentLevel: List[BinaryTree[T]] = List(this), levelsToGo: Int = level): List[BinaryTree[T]] = {
+      if (levelsToGo < 0) Nil
+      else if (levelsToGo == 0) nodesAtCurrentLevel
+      else loop(nodesAtCurrentLevel.flatMap(node => List(node.leftChild, node.rightChild)).filterNot(_.isEmpty), levelsToGo - 1)
+    }
+
+    loop()
+  }
 }
 
 
@@ -71,4 +84,6 @@ case object TreeEnd extends BinaryTree[Nothing] {
   override def collectLeaves: List[BinaryTree[Nothing]] = List()
 
   override def countLeaves: Int = 0
+
+  override def nodesAtLevel(level: Int): List[BinaryTree[Nothing]] = Nil
 }
