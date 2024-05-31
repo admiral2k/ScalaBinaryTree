@@ -16,6 +16,8 @@ abstract class BinaryTree[+T] {
   def isLeaf: Boolean
 
   def collectLeaves: List[BinaryTree[T]]
+
+  def countLeaves: Int
 }
 
 case class Node[+T](
@@ -50,6 +52,8 @@ case class Node[+T](
 
     loop()
   }
+
+  override def countLeaves: Int = collectLeaves.size
 }
 
 
@@ -65,4 +69,6 @@ case object TreeEnd extends BinaryTree[Nothing] {
   override def isLeaf: Boolean = false
 
   override def collectLeaves: List[BinaryTree[Nothing]] = List()
+
+  override def countLeaves: Int = 0
 }
