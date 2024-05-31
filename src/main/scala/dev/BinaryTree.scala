@@ -21,9 +21,11 @@ abstract class BinaryTree[+T] {
 
   def nodesAtLevel(level: Int): List[BinaryTree[T]]
 
-  def collectNodes: List[T]
+  def collectNodes: List[BinaryTree[T]]
 
   def hasPath(tree: BinaryTree[Int], target: Int): Boolean
+
+  def findAllPaths(tree: BinaryTree[String], target: String): List[List[String]]
 }
 
 case class Node[+T](
@@ -54,17 +56,42 @@ case class Node[+T](
     loop()
   }
 
-  override def collectNodes: List[T] = {
-    this.value :: this.leftChild.collectNodes ::: this.rightChild.collectNodes
+  override def collectNodes: List[BinaryTree[T]] = {
+    this :: this.leftChild.collectNodes ::: this.rightChild.collectNodes
   }
 
 
     //TODO: edit to the following signature
-    //TODO: def hasPath(tree: BinaryTree[Int], target: Int): Boolean
+    //TODO: def hasPath(target: Int): Boolean
   def hasPath(tree: BinaryTree[Int], target: Int): Boolean = {
     if (tree.isEmpty) false
     else if (tree.isLeaf) tree.value == target
     else hasPath(tree.leftChild, target - tree.value) || hasPath(tree.rightChild, target - tree.value)
+  }
+
+  //TODO: edit to the following signature
+  //TODO: def findAllPaths(target: Int): List[List[BinaryTree[T]]]
+  def findAllPaths(tree: BinaryTree[String], target: String): List[List[String]] = {
+    def loop(currentNode: BinaryTree[String],
+             currentPath: List[String],
+             targetLeft: Int): List[List[String]] = {
+      if (currentNode.isEmpty) {
+        List()
+      } else {
+        val newTargetLeft = targetLeft - currentNode.value.toInt
+        val newPath = currentPath :+ currentNode.value
+
+        if (currentNode.isLeaf && newTargetLeft == 0) {
+          List(newPath)
+        } else {
+          val leftPaths = loop(currentNode.leftChild, newPath, newTargetLeft)
+          val rightPaths = loop(currentNode.rightChild, newPath, newTargetLeft)
+          leftPaths ++ rightPaths
+        }
+      }
+    }
+
+    loop(tree, List(), target.toInt)
   }
 }
 
@@ -87,8 +114,10 @@ case object TreeEnd extends BinaryTree[Nothing] {
 
   override def nodesAtLevel(level: Int): List[BinaryTree[Nothing]] = Nil
 
-  override def collectNodes(): List[Nothing] = List()
+  override def collectNodes(): List[BinaryTree[Nothing]] = List()
 
 
   def hasPath(tree: BinaryTree[Int], target: Int): Boolean = false
+
+  def findAllPaths(tree: BinaryTree[String], target: String): List[List[String]] = List()
 }
