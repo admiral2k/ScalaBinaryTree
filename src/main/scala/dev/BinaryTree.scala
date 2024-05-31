@@ -20,6 +20,8 @@ abstract class BinaryTree[+T] {
   def countLeaves: Int
 
   def nodesAtLevel(level: Int): List[BinaryTree[T]]
+
+  def collectNodes: List[T]
 }
 
 case class Node[+T](
@@ -33,26 +35,8 @@ case class Node[+T](
   override def isLeaf: Boolean = leftChild.isEmpty && rightChild.isEmpty
 
   override def collectLeaves: List[BinaryTree[T]] = {
-    @tailrec
-    def loop(toInspect: List[BinaryTree[T]] = List(this), leaves: List[BinaryTree[T]] = List()): List[BinaryTree[T]] = {
-      if (toInspect.isEmpty) leaves
-      else {
-        if (toInspect.head.isLeaf) loop(toInspect.tail, leaves :+ toInspect.head)
-        else {
-          if (toInspect.head.leftChild.isEmpty && !toInspect.head.rightChild.isEmpty) {
-            loop(toInspect.tail :+ toInspect.head.rightChild, leaves)
-          }
-          else if (!toInspect.head.leftChild.isEmpty && toInspect.head.rightChild.isEmpty) {
-            loop(toInspect.tail :+ toInspect.head.leftChild, leaves)
-          }
-          else {
-            loop(toInspect.tail :+ toInspect.head.leftChild :+ toInspect.head.rightChild, leaves)
-          }
-        }
-      }
-    }
-
-    loop()
+    if (this.isLeaf) List(this)
+    else this.leftChild.collectLeaves ::: this.rightChild.collectLeaves
   }
 
   override def countLeaves: Int = collectLeaves.size
@@ -66,6 +50,10 @@ case class Node[+T](
     }
 
     loop()
+  }
+
+  override def collectNodes: List[T] = {
+    this.value :: this.leftChild.collectNodes ::: this.rightChild.collectNodes
   }
 }
 
@@ -86,4 +74,6 @@ case object TreeEnd extends BinaryTree[Nothing] {
   override def countLeaves: Int = 0
 
   override def nodesAtLevel(level: Int): List[BinaryTree[Nothing]] = Nil
+
+  override def collectNodes(): List[Nothing] = List()
 }
