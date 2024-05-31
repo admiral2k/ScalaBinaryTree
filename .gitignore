@@ -1,0 +1,13 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# SBT
+.bsp/
+project/target/
+target/
+
+# Scala specific
+*.class
+*.cache
+*.history3
